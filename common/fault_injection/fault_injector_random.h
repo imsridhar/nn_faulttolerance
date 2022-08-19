@@ -14,6 +14,7 @@ class FaultInjectorRandom : public FaultInjector
    private:
       bool m_active;
       UInt64 m_rng;
+      FaultDetector *fault_detector;
 };
 
 #endif // __FAULT_INJECTION_RANDOM_H

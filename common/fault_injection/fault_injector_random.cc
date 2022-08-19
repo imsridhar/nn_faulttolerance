@@ -9,6 +9,8 @@ FaultInjectorRandom::FaultInjectorRandom(UInt32 core_id, MemComponent::component
       m_active = true;
    else
       m_active = false;
+
+   fault_detector = new FaultDetector();
 }
 
 void
@@ -25,6 +27,8 @@ FaultInjectorRandom::preRead(IntPtr addr, IntPtr location, UInt32 data_size, Byt
 
       printf("Inserting bit %d flip at address %" PRIxPTR " on read access by core %d to component %s\n",
          bit_location, addr, m_core_id, MemComponentString(m_mem_component));
+
+      fault_detector->detectFault(m_core_id);
 
       fault[bit_location / 8] |= 1 << (bit_location % 8);
    }

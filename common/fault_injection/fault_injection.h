@@ -2,6 +2,7 @@
 #define __FAULT_INJECTION_H
 
 #include "fixed_types.h"
+#include "fault_detection.h"
 #include "core.h"
 
 class FaultInjector;
@@ -9,6 +10,9 @@ class FaultInjector;
 class FaultinjectionManager
 {
    private:
+
+      FaultDetector fault_detector;
+
       enum fault_type_t {
          FAULT_TYPE_TOGGLE,
          FAULT_TYPE_SET0,
