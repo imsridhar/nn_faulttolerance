@@ -71,7 +71,7 @@ def save_output(base_configuration, benchmark, console_output, cpistack, started
             shutil.copyfileobj(f_in, f_out)
     create_plots(run)
 
-
+# run(['PCMig', 'fastDVFS'], get_instance('parsec-blackscholes', 15, input_set='simmedium'))
 def run(base_configuration, benchmark, ignore_error=False):
     print('running {} with configuration {}'.format(benchmark, '+'.join(base_configuration)))
     started = datetime.datetime.now()
@@ -90,7 +90,15 @@ def run(base_configuration, benchmark, ignore_error=False):
     console_output = ''
     print(args)
     run_sniper = os.path.join(BENCHMARKS, 'run-sniper')
+
+    print([run_sniper] + args.split(' '))
+    print('stdout=', subprocess.PIPE)
+    print('stderr=',subprocess.STDOUT)
+
     p = subprocess.Popen([run_sniper] + args.split(' '), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, cwd=BENCHMARKS)
+
+    print(p)
+    exit()
     with p.stdout:
         for line in iter(p.stdout.readline, b''):
             linestr = line.decode('utf-8')
@@ -238,11 +246,13 @@ def example():
 def test_static_power():
     run(['4.0GHz', 'tsp', 'slowDVFS'], get_instance('parsec-blackscholes', 6, input_set='simsmall'))
 
+def test_pcmig():
+    run(['PCMig', 'fastDVFS'], get_instance('parsec-blackscholes', 15, input_set='simmedium'))
 
 def main():
     # example()
-    test_static_power()
-
+    # test_static_power()
+    test_pcmig()
 
 if __name__ == '__main__':
     main()
