@@ -15,8 +15,11 @@
 #include "policies/dvfsMaxFreq.h"
 #include "policies/dvfsFixedPower.h"
 #include "policies/dvfsTSP.h"
+#include "policies/dvfsMaxSteadyState.h"
 #include "policies/dvfsTestStaticPower.h"
 #include "policies/mapFirstUnused.h"
+#include "policies/migrationIPSPrediction.h"
+#include "policies/pcmap.h"
 
 #include <iomanip>
 #include <random>
@@ -274,20 +277,27 @@ SchedulerOpen::SchedulerOpen(ThreadManager *thread_manager)
  * Initialize the mapping policy to the policy with the given name
  */
 void SchedulerOpen::initMappingPolicy(String policyName) {
-	cout << "[Scheduler] [Info]: Initializing mapping policy" << endl;
+	cout << "[Scheduler] [Info]: Initializing mapping policy: " << policyName << endl;
+	
 	if (policyName == "first_unused") {
+		// cout << "I am here" << endl;
+		cout << policyName << endl;
 		vector<int> preferredCoresOrder;
 		for (core_id_t core_id = 0; core_id < (core_id_t)Sim()->getConfig()->getApplicationCores(); core_id++) {
 			int p = Sim()->getCfg()->getIntArray("scheduler/open/preferred_core", core_id);
 			if (p != -1) {
 				preferredCoresOrder.push_back(p);
 			} else {
+				cout << "\n[Scheduler] [Error]: Unknown Mapping Algorithm" << endl;
 				break;
 			}
 		}
 		mappingPolicy = new MapFirstUnused(coreRows, coreColumns, preferredCoresOrder);
-	} //else if (policyName ="XYZ") {... } //Place to instantiate a new mapping logic. Implementation is put in "policies" package.
+	} else if (policyName == "PCMap") {
+				mappingPolicy = new PCMap(coreRows, coreColumns, thermalModel);
+	} //else if (policyName ="XYZ") {... } //Place to instantiate a new mapping logic. Implementation is put in "policies" package.//else if (policyName ="XYZ") {... } //Place to instantiate a new mapping logic. Implementation is put in "policies" package.
 	else {
+		cout << "Mapping algorithm not available" << endl;
 		cout << "\n[Scheduler] [Error]: Unknown Mapping Algorithm" << endl;
  		exit (1);
 	}
@@ -309,9 +319,11 @@ void SchedulerOpen::initDVFSPolicy(String policyName) {
 		dvfsPolicy = new DVFSFixedPower(performanceCounters, coreRows, coreColumns, minFrequency, maxFrequency, frequencyStepSize, perCorePowerBudget);
 	} else if (policyName == "tsp") {
 		dvfsPolicy = new DVFSTSP(thermalModel, performanceCounters, coreRows, coreColumns, minFrequency, maxFrequency, frequencyStepSize);
-	} //else if (policyName ="XYZ") {... } //Place to instantiate a new DVFS logic. Implementation is put in "policies" package.
-	else {
-		cout << "\n[Scheduler] [Error]: Unknown DVFS Algorithm" << endl;
+	} else if (policyName == "maxSteadyState") {
+		dvfsPolicy = new DVFSMaxSteadyState(thermalModel, performanceCounters, coreRows, coreColumns, minFrequency, maxFrequency, frequencyStepSize);
+	//} else if (policyName ="XYZ") {... } //Place to instantiate a new DVFS logic. Implementation is put in "policies" package.
+	} else {
+		cout << "\n[Scheduler] [Error]: Unknown DVFS Algorithm: " << policyName << endl;
  		exit (1);
 	}
 }
@@ -323,9 +335,14 @@ void SchedulerOpen::initMigrationPolicy(String policyName) {
 	cout << "[Scheduler] [Info]: Initializing migration policy" << endl;
 	if (policyName == "off") {
 		migrationPolicy = NULL;
-	} //else if (policyName ="XYZ") {... } //Place to instantiate a new migration logic. Implementation is put in "policies" package.
+	} else if (policyName == "pcmig") {
+		int migrationPeriod = Sim()->getCfg()->getInt("scheduler/open/migration/pcmig/migration_period");
+		int ignoreAfterMigration = Sim()->getCfg()->getInt("scheduler/open/migration/pcmig/ignore_after_migration");
+		migrationPolicy = new MigrationIPSPrediction(migrationPeriod, ignoreAfterMigration, thermalModel, performanceCounters, coreRows, coreColumns);
+ 	} //else if (policyName ="XYZ") {... } //Place to instantiate a new migration logic. Implementation is put in "policies" package.
+
 	else {
-		cout << "\n[Scheduler] [Error]: Unknown Migration Algorithm" << endl;
+		cout << "\n[Scheduler] [Error]: Unknown Migration Algorithm: " << policyName << endl;
  		exit (1);
 	}
 }

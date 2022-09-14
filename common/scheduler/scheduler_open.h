@@ -75,5 +75,4 @@ class SchedulerOpen : public SchedulerPinnedBase {
 		bool schedule (int taskID, bool isInitialCall, SubsecondTime time);
 		
 };
-
 #endif // __SCHEDULER_OPEN_H
