@@ -1,0 +1,9 @@
+{
+    "ambient_temperature": 45,
+    "config": {},
+    "core_naming": "sniper",
+    "max_temperature": 80,
+    "processorsX": 8,
+    "processorsY": 8,
+    "tdp": 100
+}
