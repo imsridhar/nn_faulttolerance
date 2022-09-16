@@ -3,12 +3,12 @@ HOOKS_DIR=../tools/hooks/
 
 parsec-core : parsec-2.1/.parsec_source
 parsec-2.1/.parsec_source :
-	wget -O - http://parsec.cs.princeton.edu/download/2.1/parsec-2.1-core.tar.gz --no-check-certificate| tar xz --keep-old-files ; true
-	wget -O - -q http://parsec.cs.princeton.edu/download/2.1/bugfixes/parsec-ocreat.patch --no-check-certificate| patch -p1 -dparsec-2.1
-	wget -O - -q http://parsec.cs.princeton.edu/download/2.1/bugfixes/ferret-deadlock.patch --no-check-certificate| patch -p1 -dparsec-2.1
-	wget -O - -q http://parsec.cs.princeton.edu/download/2.1/bugfixes/blackscholes.c.patch --no-check-certificate| patch -p0 -dparsec-2.1/pkgs/apps/blackscholes/src
-	wget -O - -q http://parsec.cs.princeton.edu/download/2.1/bugfixes/blackscholes.tbb.cpp.patch --no-check-certificate| patch -p0 -dparsec-2.1/pkgs/apps/blackscholes/src
-	wget -O - -q http://parsec.cs.princeton.edu/download/2.1/bugfixes/streamcluster_barrier.patch --no-check-certificate| patch -p1 -dparsec-2.1
+	wget -O - http://parsec.cs.princeton.edu/download/2.1/parsec-2.1-core.tar.gz --no-check-certificate | tar xz --keep-old-files ; true
+	wget -O - -q http://parsec.cs.princeton.edu/download/2.1/bugfixes/parsec-ocreat.patch --no-check-certificate | patch -p1 -dparsec-2.1
+	wget -O - -q http://parsec.cs.princeton.edu/download/2.1/bugfixes/ferret-deadlock.patch --no-check-certificate | patch -p1 -dparsec-2.1
+	wget -O - -q http://parsec.cs.princeton.edu/download/2.1/bugfixes/blackscholes.c.patch --no-check-certificate | patch -p0 -dparsec-2.1/pkgs/apps/blackscholes/src
+	wget -O - -q http://parsec.cs.princeton.edu/download/2.1/bugfixes/blackscholes.tbb.cpp.patch --no-check-certificate | patch -p0 -dparsec-2.1/pkgs/apps/blackscholes/src
+	wget -O - -q http://parsec.cs.princeton.edu/download/2.1/bugfixes/streamcluster_barrier.patch --no-check-certificate | patch -p1 -dparsec-2.1
 	patch -p1 -dparsec-2.1 < patches/ssl-asm.patch
 	patch -p1 -dparsec-2.1 < patches/raytrace-unistd-gcc-fix.patch
 	patch -p3 -dparsec-2.1 < patches/raytrace-Xext-fix.patch
