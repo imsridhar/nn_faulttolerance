@@ -91,14 +91,8 @@ def run(base_configuration, benchmark, ignore_error=False):
     print(args)
     run_sniper = os.path.join(BENCHMARKS, 'run-sniper')
 
-    print([run_sniper] + args.split(' '))
-    print('stdout=', subprocess.PIPE)
-    print('stderr=',subprocess.STDOUT)
-
     p = subprocess.Popen([run_sniper] + args.split(' '), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, cwd=BENCHMARKS)
 
-    print(p)
-    exit()
     with p.stdout:
         for line in iter(p.stdout.readline, b''):
             linestr = line.decode('utf-8')
